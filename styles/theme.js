@@ -1,7 +1,12 @@
-import { createTheme } from "@mui/system";
+import { createTheme } from "@mui/material/styles";
 
-const theme = createTheme({
-  components: {},
+export const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#DB4C3F",
+    },
+    white: {
+      main: "#fff",
+    },
+  },
 });
-
-export default theme;

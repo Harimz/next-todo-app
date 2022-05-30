@@ -11,6 +11,7 @@ const SearchBar = ({ setUserInput }) => {
       sx={{
         transition: "all 0.3s ease",
         width: inputFocus ? "25rem" : "15rem",
+        display: { xs: "none", sm: "block" },
       }}
     >
       <TextField

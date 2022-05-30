@@ -9,7 +9,7 @@ const Navigation = () => {
   const [userInput, setUserInput] = useState("");
 
   return (
-    <Stack bgcolor="primary.main" component="nav">
+    <Stack bgcolor="primary.main" component="nav" border="2px solid red">
       <Stack
         width="95%"
         direction="row"
@@ -31,7 +31,11 @@ const Navigation = () => {
           <SearchBar setUserInput={setUserInput} />
         </Stack>
 
-        <Stack direction="row" spacing={2}>
+        <Stack
+          direction="row"
+          spacing={2}
+          sx={{ display: { xs: "none", sm: "block" } }}
+        >
           <LinkButton route="/auth/login" text="Login" />
 
           <LinkButton route="/auth/signup" text="Sign Up" />

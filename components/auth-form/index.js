@@ -4,15 +4,39 @@ import Image from "next/image";
 import AuthButton from "./auth-button";
 import InputField from "./input-field";
 import Link from "next/link";
+import axios from "axios";
+import { useRouter } from "next/router";
+import { signIn } from "next-auth/react";
 
 const AuthForm = ({ type }) => {
   const [userInputs, setUserInputs] = useState({
     email: "",
     password: "",
   });
+  const router = useRouter();
 
-  const credentialsHandler = (e) => {
+  const credentialsHandler = async (e) => {
     e.preventDefault();
+
+    try {
+      if (type === "register") {
+        const { data } = await axios.post("/api/auth/register", userInputs, {
+          "Content-Type": "application/json",
+        });
+
+        const result = await signIn("credentials", {
+          redirect: false,
+          email: userInputs.email,
+          password: userInputs.password,
+        });
+
+        if (!result.error) {
+          router.replace("/");
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -56,24 +80,24 @@ const AuthForm = ({ type }) => {
           <Typography component="p" textAlign="center">
             Already have an account?{" "}
             <Link passHref href="/auth/login">
-              <Typography
+              {/* <Typography
                 display="inline-block"
                 sx={{ cursor: "pointer", textDecoration: "underline" }}
-              >
-                Login
-              </Typography>
+              > */}
+              Login
+              {/* </Typography> */}
             </Link>
           </Typography>
         ) : (
           <Typography component="p" textAlign="center">
             Dont have an account?{" "}
             <Link passHref href="/auth/signup">
-              <Typography
+              {/* <Typography
                 display="inline-block"
                 sx={{ cursor: "pointer", textDecoration: "underline" }}
               >
-                Sign up
-              </Typography>
+                Sign up */}
+              {/* </Typography> */}
             </Link>
           </Typography>
         )}

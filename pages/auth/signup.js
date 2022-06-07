@@ -9,4 +9,10 @@ const SignupPage = () => {
   );
 };
 
+export const getStaticProps = () => {
+  return {
+    props: {},
+  };
+};
+
 export default SignupPage;

@@ -1,5 +1,12 @@
-import React, { useState } from "react";
-import { Box, Button, Divider, Stack, Typography } from "@mui/material";
+import React, { useState, forwardRef } from "react";
+import {
+  Box,
+  Button,
+  Divider,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import Image from "next/image";
 import AuthButton from "./auth-button";
 import InputField from "./input-field";
@@ -7,36 +14,52 @@ import Link from "next/link";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { signIn } from "next-auth/react";
+import { useForm, Controller } from "react-hook-form";
+import formErrors from "../../utils/form-errors";
 
 const AuthForm = ({ type }) => {
   const [userInputs, setUserInputs] = useState({
     email: "",
     password: "",
   });
+  const {
+    handleSubmit,
+    register,
+    control,
+    formState: { errors },
+    clearErrors,
+  } = useForm(formErrors);
   const router = useRouter();
 
-  const credentialsHandler = async (e) => {
+  const credentialsHandler = async (credentials) => {
     e.preventDefault();
+    const { email, password } = credentials;
 
-    try {
-      if (type === "register") {
-        const { data } = await axios.post("/api/auth/register", userInputs, {
-          "Content-Type": "application/json",
-        });
+    console.log(email, password);
 
-        const result = await signIn("credentials", {
-          redirect: false,
-          email: userInputs.email,
-          password: userInputs.password,
-        });
+    // try {
+    //   if (type === "register") {
+    //     const { data } = await axios.post(
+    //       "/api/auth/register",
+    //       { email, password },
+    //       {
+    //         "Content-Type": "application/json",
+    //       }
+    //     );
 
-        if (!result.error) {
-          router.replace("/");
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    }
+    //     const result = await signIn("credentials", {
+    //       redirect: false,
+    //       email: email,
+    //       password: password,
+    //     });
+
+    //     if (!result.error) {
+    //       router.replace("/");
+    //     }
+    //   }
+    // } catch (error) {
+    //   console.log(error);
+    // }
   };
 
   return (
@@ -46,21 +69,51 @@ const AuthForm = ({ type }) => {
         sx={{ width: { xs: "100%", lg: "50%" } }}
         gap="1rem"
         padding="3rem"
-        onSubmit={credentialsHandler}
+        onSubmit={handleSubmit(credentialsHandler)}
       >
         <Typography variant="h4" fontWeight="bold">
           {type === "register" ? "Sign Up" : "Login"}
         </Typography>
 
-        <AuthButton strategy="google">Contine with Google</AuthButton>
+        <AuthButton
+          strategy="google"
+          onClick={() => signIn("google", { redirect: "/" })}
+        >
+          Contine with Google
+        </AuthButton>
 
-        <AuthButton strategy="facebook">Continue with facebook</AuthButton>
+        <AuthButton
+          strategy="facebook"
+          onClick={() => signIn("facebook", { redirect: "/" })}
+        >
+          Continue with facebook
+        </AuthButton>
 
         <Divider />
 
-        <InputField setUserInputs={setUserInputs} />
+        <Controller
+          name={"email"}
+          control={control}
+          render={({ field }) => <TextField {...field} />}
+        />
 
-        <InputField type="password" setUserInputs={setUserInputs} />
+        {/* <Controller
+          name={"email"}
+          control={control}
+          render={({ field: { onChange, value } }) => (
+            <InputField
+              onChange={onChange}
+              value={value}
+              // setUserInputs={setUserInputs}
+            />
+          )}
+        /> */}
+
+        {/* <InputField
+          type="password"
+          // setUserInputs={setUserInputs}
+          {...register("password")}
+        /> */}
 
         <Button
           variant="contained"
@@ -95,8 +148,8 @@ const AuthForm = ({ type }) => {
               {/* <Typography
                 display="inline-block"
                 sx={{ cursor: "pointer", textDecoration: "underline" }}
-              >
-                Sign up */}
+              > */}
+              Sign up
               {/* </Typography> */}
             </Link>
           </Typography>

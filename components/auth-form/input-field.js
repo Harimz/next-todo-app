@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+/* eslint-disable react/display-name */
+import React, { useState, forwardRef } from "react";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import {
   FormControl,
@@ -9,7 +10,7 @@ import {
   TextField,
 } from "@mui/material";
 
-const InputField = ({ type, setUserInputs }) => {
+const InputField = ({ type, setUserInputs }, ...props) => {
   const [visibility, setVisibility] = useState(false);
 
   return (
@@ -23,9 +24,10 @@ const InputField = ({ type, setUserInputs }) => {
             id="outlined-adornment-password"
             label="Password"
             type={visibility ? "text" : "password"}
-            onChange={({ target }) =>
-              setUserInputs((state) => ({ ...state, password: target.value }))
-            }
+            // onChange={({ target }) =>
+            //   setUserInputs((state) => ({ ...state, password: target.value }))
+            // }
+            {...props}
             placeholder="Enter your password..."
             endAdornment={
               <InputAdornment position="end">
@@ -46,9 +48,10 @@ const InputField = ({ type, setUserInputs }) => {
           label="Email"
           placeholder="Enter your email..."
           size="medium"
-          onChange={({ target }) =>
-            setUserInputs((state) => ({ ...state, email: target.value }))
-          }
+          {...props}
+          // onChange={({ target }) =>
+          //   setUserInputs((state) => ({ ...state, email: target.value }))
+          // }
         />
       )}
     </FormControl>

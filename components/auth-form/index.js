@@ -32,7 +32,6 @@ const AuthForm = ({ type }) => {
   const router = useRouter();
 
   const credentialsHandler = async (credentials) => {
-    e.preventDefault();
     const { email, password } = credentials;
 
     console.log(email, password);
@@ -79,7 +78,7 @@ const AuthForm = ({ type }) => {
           strategy="google"
           onClick={() => signIn("google", { redirect: "/" })}
         >
-          Contine with Google
+          Continue with Google
         </AuthButton>
 
         <AuthButton
@@ -91,29 +90,9 @@ const AuthForm = ({ type }) => {
 
         <Divider />
 
-        <Controller
-          name={"email"}
-          control={control}
-          render={({ field }) => <TextField {...field} />}
-        />
+        <InputField control={control} errors={errors} />
 
-        {/* <Controller
-          name={"email"}
-          control={control}
-          render={({ field: { onChange, value } }) => (
-            <InputField
-              onChange={onChange}
-              value={value}
-              // setUserInputs={setUserInputs}
-            />
-          )}
-        /> */}
-
-        {/* <InputField
-          type="password"
-          // setUserInputs={setUserInputs}
-          {...register("password")}
-        /> */}
+        <InputField type="password" control={control} errors={errors} />
 
         <Button
           variant="contained"

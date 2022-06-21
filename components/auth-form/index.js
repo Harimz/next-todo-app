@@ -16,6 +16,7 @@ import { useRouter } from "next/router";
 import { signIn } from "next-auth/react";
 import { useForm, Controller } from "react-hook-form";
 import formErrors from "../../utils/form-errors";
+import { useAuth } from "../../hooks/useAuth";
 
 const AuthForm = ({ type }) => {
   const [userInputs, setUserInputs] = useState({
@@ -30,35 +31,14 @@ const AuthForm = ({ type }) => {
     clearErrors,
   } = useForm(formErrors);
   const router = useRouter();
+  const { registerUser, error } = useAuth();
 
   const credentialsHandler = async (credentials) => {
     const { email, password } = credentials;
 
     console.log(email, password);
 
-    // try {
-    //   if (type === "register") {
-    //     const { data } = await axios.post(
-    //       "/api/auth/register",
-    //       { email, password },
-    //       {
-    //         "Content-Type": "application/json",
-    //       }
-    //     );
-
-    //     const result = await signIn("credentials", {
-    //       redirect: false,
-    //       email: email,
-    //       password: password,
-    //     });
-
-    //     if (!result.error) {
-    //       router.replace("/");
-    //     }
-    //   }
-    // } catch (error) {
-    //   console.log(error);
-    // }
+    const result = registerUser(email, password);
   };
 
   return (

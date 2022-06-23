@@ -15,12 +15,10 @@ export default Wrapper({
     const userExists = await User.findOne({ email });
 
     if (userExists) {
-      throw new Error("User already exists.", 409);
+      throw new Exception("User already exists.", 409);
     }
 
     const user = await User.create({ email, password });
-
-    console.log(user);
 
     return { data: user };
   },

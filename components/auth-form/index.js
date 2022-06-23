@@ -1,48 +1,56 @@
-import React, { useState, forwardRef } from "react";
-import {
-  Box,
-  Button,
-  Divider,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
+import React, { useState } from "react";
+import { Box, Button, Divider, Stack, Typography } from "@mui/material";
 import Image from "next/image";
 import AuthButton from "./auth-button";
 import InputField from "./input-field";
 import Link from "next/link";
-import axios from "axios";
 import { useRouter } from "next/router";
 import { signIn } from "next-auth/react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import formErrors from "../../utils/form-errors";
 import { useAuth } from "../../hooks/useAuth";
+import Toast from "../toast";
 
 const AuthForm = ({ type }) => {
-  const [userInputs, setUserInputs] = useState({
-    email: "",
-    password: "",
-  });
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState("");
+  const router = useRouter();
+
   const {
     handleSubmit,
-    register,
     control,
     formState: { errors },
-    clearErrors,
   } = useForm(formErrors);
-  const router = useRouter();
-  const { registerUser, error } = useAuth();
+  const { registerUser, loginUser } = useAuth();
 
   const credentialsHandler = async (credentials) => {
     const { email, password } = credentials;
 
-    console.log(email, password);
+    if (type === "register") {
+      const result = await registerUser(email, password);
 
-    const result = registerUser(email, password);
+      if (result.status === "error") {
+        setOpen(true);
+        setMessage(result.message);
+      }
+
+      router.replace("/");
+    } else {
+      const result = await loginUser(email, password);
+
+      if (result.status === "error") {
+        setOpen(true);
+        setMessage(result.message);
+      }
+
+      router.replace("/");
+    }
   };
 
   return (
     <Stack maxWidth="60rem" width="100%" margin="5rem auto" direction="row">
+      <Toast severity="error" message={message} open={open} setOpen={setOpen} />
+
       <Stack
         component="form"
         sx={{ width: { xs: "100%", lg: "50%" } }}

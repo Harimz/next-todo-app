@@ -1,10 +1,7 @@
 import axios from "axios";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/router";
 
 export const useAuth = () => {
-  const router = useRouter();
-
   const registerUser = async (email, password) => {
     try {
       const { data } = await axios.post(
@@ -22,13 +19,39 @@ export const useAuth = () => {
       });
 
       if (!result.error) {
-        router.replace("/");
-        return result;
+        return { status: "success", data: data };
+      }
+    } catch (error) {
+      const errorMessage =
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message;
+
+      return { status: "error", message: errorMessage };
+    }
+  };
+
+  const loginUser = async (email, password) => {
+    try {
+      const result = await signIn("credentials", {
+        redirect: false,
+        email: email,
+        password: password,
+      });
+
+      console.log(result);
+
+      if (result.error) {
+        return { status: "error", message: result.error };
+      }
+
+      if (!result.error) {
+        return { status: "success", data: result };
       }
     } catch (error) {
       return error;
     }
   };
 
-  return { registerUser, error };
+  return { registerUser, loginUser };
 };
